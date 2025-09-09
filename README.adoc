@@ -135,6 +135,10 @@ $ npm run test
 
 - EMAIL_PROVIDER=smtp | sendgrid | mailgun
 
+Настройки окружения
+
+- NODE_ENV=production | development | local
+
 == Локальная разработка
 
 *Запуск*

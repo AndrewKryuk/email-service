@@ -19,9 +19,10 @@ services:
       dockerfile: .docker/app/Dockerfile
     ports:
       - '${HTTP_PORT}:${HTTP_PORT}'
+      - '9000:9000'
     volumes:
-      - ./src:/app/src
-      - ./database:/app/database
+      - ./src:/opt/app/src
+      - ./database:/opt/app/database
     env_file:
       - .env
 
