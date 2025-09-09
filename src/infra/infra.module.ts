@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { configurationProviders } from '@infra/configuration/configuration.providers';
 import { ConfigurationModule } from '@kryuk/ddd-kit/infra/configuration/configuration.module';
 import { TypeormConfigAbstract } from '@kryuk/ddd-kit/application/abstract/configuration/typeorm-config.abstract';
+import { AdaptersModule } from '@infra/adapters/adapters.module';
 
 @Module({
   imports: [
@@ -14,9 +15,10 @@ import { TypeormConfigAbstract } from '@kryuk/ddd-kit/application/abstract/confi
         typeormConfig.options,
     }),
     RepositoriesModule,
+    AdaptersModule,
   ],
   controllers: [],
   providers: [],
-  exports: [RepositoriesModule],
+  exports: [RepositoriesModule, AdaptersModule],
 })
 export class InfraModule {}

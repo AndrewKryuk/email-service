@@ -1,0 +1,13 @@
+import { EmailAdapterAbstract } from '@domain/abstract/adapters/email-adapter.abstract';
+import { Injectable } from '@nestjs/common';
+import { ISendEmailOptions } from '@domain/interfaces/send-email-options.interface';
+import { faker } from '@faker-js/faker';
+import { Log } from '@kryuk/ddd-kit/application/decorators/log.decorator';
+
+@Injectable()
+export class SendgridAdapter implements EmailAdapterAbstract {
+  @Log({ level: 'debug' })
+  async sendEmail(_options: ISendEmailOptions): Promise<{ result: boolean }> {
+    return { result: faker.datatype.boolean() };
+  }
+}
