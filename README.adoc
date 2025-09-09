@@ -1,0 +1,167 @@
+= email-service
+:toc:
+:toc-title: Содержание
+
+== Структура проекта
+
+[source,bash]
+----
+ - database/migrations/*.ts # миграции
+ - src/
+    - infra/ # инфраструктурный слой
+      - entities/*.entity.ts # orm модели
+      - repositories/*.repository.ts # репозитории
+        - repositories.providers.ts # провайдеры для репозиториев
+      - adapters/*.adapter.ts # адаптеры
+        - adapters.providers.ts # провайдеры для адаптеров
+    - domain/ # доменный слой
+      - abstract/repositories/*.abstract.ts # абстракции репозиториев
+      - constants/*/*.ts # доменные константы
+      - entities/*/*.ts # доменные модели
+      - entity-props/*.interface.ts # интерфейсы свойств моделей
+      - exceptions/*.ts # доменные эксепшны
+      - aggregates/*.ts # аггрегаты
+      - value-objects/*.ts # value objects
+    - application/ # бизнес-логика
+      - usecases/*/*.usecase.ts # юзкейсы
+      - interfaces/**/*.interface.ts # интерфейсы
+      - abstract/**/*.abstract.ts # абстракции юзкейсов
+      - dto/**/*.abstract.ts # dto для валидаций
+      - __tests__/**/*.spec.ts # unit тесты для юзкейсов
+        - __mocks__/**/*.mock.ts # моки
+    - transport/ # транспортный слой
+      - grpc/*/controllers/*.controller.ts
+      - kafka/*/controllers/*.controller.ts
+      - cli/*/commands/*.commands=.ts
+      - http/*/controllers/*.controller.ts
+----
+
+== Карточка сервиса
+
+|===
+| Стек |
+nodejs 20.11.1
+
+| БД |
+postgres ~16,
+
+| Взаимодействия |
+* http (int) - межсервисное взаимодействие
+
+| Поддержка OTLP |
+да
+
+| Метрики |
+
+GET :9000/metrics
+
+| Хелфчеки |
+
+readiness, liveness
+:3000/health
+|===
+== Запуск тестов
+
+*unit тесты*
+
+[source,bash]
+----
+$ npm run test
+----
+
+
+== Коды ошибок
+
+Код ошибки состоит максимум из 5 букв + "-" + итерируемое число.
+
+*Примеры:*
+
+- *INPUT-001* - ошибка валидации
+- *UNKNW-001* - неизвестная ошибка
+- *DB-001* - ошибка базы данных
+
+*Пример ошибки:*
+[source,json]
+----
+{"errors":[{"message":"Resource's not found","code":"USER-002"}]}
+----
+
+== Логирование
+
+*Уровни логирования*:
+
+- *debug* - отладочная информация, на продакшне отключено
+- *info* - стандартный уровень логирования, указывающий на то, что что-то произошло (приложение перешло в определенный статус и т.д.)
+- *warn* - ошибка, которая не приводит к остановке выполнения запроса
+- *error* - ошибка, которая приводит к остановке выполнения запроса
+- *fatal* - ошибка, которая приводит к остановке какой-либо бизнес-функции, либо всего приложения
+
+*Пример использования:*
+[source,typescript]
+----
+  @Log({ level: 'debug', data: { 'additionalProperty': 'example' } })
+  @Redact(['token'])
+  someMethod(arg1, arg2): Promise<any> {}
+----
+Добавит объект data в лог, спрячет поле с названием token, залогирует аргументы метода и его ответ.
+
+== Конфигурация
+
+Производится посредством переменных окружения (.env) и опционально yaml-файла. Пример - ./.env.sample
+
+*Список обязательных переменных окружения для запуска*
+
+Название сервиса:
+
+- SERVICE_NAME=email-service
+
+Настройки postgresql
+
+- POSTGRES_HOST=postgres
+
+- POSTGRES_PORT=5432
+
+- POSTGRES_USER=postgres
+
+- POSTGRES_PASSWORD=password
+
+- POSTGRES_DB=postgres
+
+Настройки HTTP
+
+- HTTP_PORT=3000
+
+Настройки провайдера отправки писем
+
+- EMAIL_PROVIDER=smtp | sendgrid | mailgun
+
+== Локальная разработка
+
+*Запуск*
+
+[source,bash]
+----
+$ cp .env.sample .env
+$ docker-compose up -d
+----
+
+*Миграции*
+
+создать пустую миграцию:
+
+[source,bash]
+----
+$ npm run migration:create --name=<название миграции>
+----
+накатить миграции:
+
+[source,bash]
+----
+$ npm run migration:run
+----
+автоматически сгенерировать миграцию по разнице между entities и базой данных:
+
+[source,bash]
+----
+$ npm run migration:generate --name=<название миграции>
+----

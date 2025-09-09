@@ -1,0 +1,5 @@
+.dockerignore
+npm-debug.log
+docker-compose.yml
+README.adoc
+.npmrc
