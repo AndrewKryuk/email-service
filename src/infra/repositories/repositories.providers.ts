@@ -1,10 +1,10 @@
 import { Provider } from '@nestjs/common';
-import { EmailRepositoryAbstract } from '@domain/abstract/repositories/email-repository.abstract';
-import { EmailRepository } from '@infra/repositories/email.repository';
+import { EmailsOutboxRepositoryAbstract } from '@domain/abstract/repositories/emails-outbox-repository.abstract';
+import { EmailsOutboxRepository } from '@infra/repositories/emails-outbox.repository';
 
 export const repositoriesProviders: Provider[] = [
   {
-    provide: EmailRepositoryAbstract,
-    useClass: EmailRepository,
+    provide: EmailsOutboxRepositoryAbstract,
+    useClass: EmailsOutboxRepository,
   },
 ];

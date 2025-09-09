@@ -1,8 +1,8 @@
 import { Nullable } from '@kryuk/ddd-kit/domain/types/nullable';
-import { EEmailStatus } from '@domain/enums/email-status.enum';
 import { Undefinedable } from '@kryuk/ddd-kit/domain/types/undefinedable';
+import { EEmailOutboxStatus } from '@domain/enums/email-outbox-status.enum';
 
-export interface IEmailProps {
+export interface IEmailOutboxProps {
   /**
    * UUID
    */
@@ -29,9 +29,9 @@ export interface IEmailProps {
   retryCount: number;
 
   /**
-   * Email status
+   * Email outbox status
    */
-  status: EEmailStatus;
+  status: EEmailOutboxStatus;
 
   /**
    * Error
@@ -42,6 +42,11 @@ export interface IEmailProps {
    * Next retry date
    */
   nextRetryAt?: Nullable<Date>;
+
+  /**
+   * Locked at
+   */
+  lockedAt?: Nullable<Date>;
 
   /**
    * Creation date,

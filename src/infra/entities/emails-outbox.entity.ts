@@ -6,11 +6,11 @@ import {
 } from 'typeorm';
 import { BaseTypeOrmEntity } from '@kryuk/ddd-kit/infra/base/base-type-orm.entity';
 import { Nullable } from '@kryuk/ddd-kit/domain/types/nullable';
-import { EEmailStatus } from '@domain/enums/email-status.enum';
-import { Email } from '@domain/entities/email';
+import { EmailsOutbox } from '@domain/entities/emails-outbox';
+import { EEmailOutboxStatus } from '@domain/enums/email-outbox-status.enum';
 
-@Entity('emails')
-export class EmailEntity extends BaseTypeOrmEntity {
+@Entity('emails_outbox')
+export class EmailsOutboxEntity extends BaseTypeOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -32,11 +32,14 @@ export class EmailEntity extends BaseTypeOrmEntity {
   @Column({ type: Date, nullable: true })
   nextRetryAt: Nullable<Date>;
 
+  @Column({ type: Date, nullable: true })
+  lockedAt: Nullable<Date>;
+
   @Column({
     type: 'enum',
-    enum: EEmailStatus,
+    enum: EEmailOutboxStatus,
   })
-  status: EEmailStatus;
+  status: EEmailOutboxStatus;
 
   @Column({ type: 'text', nullable: true })
   error: Nullable<string>;
@@ -44,14 +47,15 @@ export class EmailEntity extends BaseTypeOrmEntity {
   @DeleteDateColumn({ type: 'timestamptz', nullable: true })
   deletedAt?: Nullable<Date>;
 
-  toDomain(): Email {
-    return Email.create({
+  toDomain(): EmailsOutbox {
+    return EmailsOutbox.create({
       id: this.id,
       to: this.toAddresses,
       subject: this.subject,
       html: this.html,
       retryCount: this.retryCount,
       nextRetryAt: this.nextRetryAt,
+      lockedAt: this.lockedAt,
       status: this.status,
       error: this.error,
       createdAt: this.createdAt,
@@ -60,20 +64,21 @@ export class EmailEntity extends BaseTypeOrmEntity {
     });
   }
 
-  static fromDomain(email: Email): EmailEntity {
-    const self = new EmailEntity();
+  static fromDomain(emailsOutbox: EmailsOutbox): EmailsOutboxEntity {
+    const self = new EmailsOutboxEntity();
 
-    self.id = email.id;
-    self.toAddresses = email.to;
-    self.subject = email.subject;
-    self.html = email.html;
-    self.retryCount = email.retryCount;
-    self.nextRetryAt = email.nextRetryAt ?? null;
-    self.status = email.status;
-    self.error = email.error ?? null;
-    self.createdAt = email.createdAt;
-    self.updatedAt = email.updatedAt;
-    self.deletedAt = email.deletedAt;
+    self.id = emailsOutbox.id;
+    self.toAddresses = emailsOutbox.to;
+    self.subject = emailsOutbox.subject;
+    self.html = emailsOutbox.html;
+    self.retryCount = emailsOutbox.retryCount;
+    self.nextRetryAt = emailsOutbox.nextRetryAt ?? null;
+    self.lockedAt = emailsOutbox.lockedAt ?? null;
+    self.status = emailsOutbox.status;
+    self.error = emailsOutbox.error ?? null;
+    self.createdAt = emailsOutbox.createdAt;
+    self.updatedAt = emailsOutbox.updatedAt;
+    self.deletedAt = emailsOutbox.deletedAt;
 
     return self;
   }

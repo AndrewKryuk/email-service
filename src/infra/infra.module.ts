@@ -5,6 +5,7 @@ import { configurationProviders } from '@infra/configuration/configuration.provi
 import { ConfigurationModule } from '@kryuk/ddd-kit/infra/configuration/configuration.module';
 import { TypeormConfigAbstract } from '@kryuk/ddd-kit/application/abstract/configuration/typeorm-config.abstract';
 import { AdaptersModule } from '@infra/adapters/adapters.module';
+import { transactionServiceProvider } from '@kryuk/ddd-kit/infra/services/services.providers';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { AdaptersModule } from '@infra/adapters/adapters.module';
     AdaptersModule,
   ],
   controllers: [],
-  providers: [],
-  exports: [RepositoriesModule, AdaptersModule],
+  providers: [transactionServiceProvider],
+  exports: [RepositoriesModule, AdaptersModule, transactionServiceProvider],
 })
 export class InfraModule {}
