@@ -48,7 +48,7 @@ export class Email extends DomainEntity<IEmailProps> {
   }
 
   get id(): string {
-    return this.props.id;
+    return this._id;
   }
 
   get to(): string[] {

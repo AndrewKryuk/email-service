@@ -139,6 +139,10 @@ $ npm run test
 
 - NODE_ENV=production | development | local
 
+Настройка access token
+
+- ACCESS_TOKEN=1e7ef5a4-9ec3-4feb-9085-f78919c83317
+
 == Локальная разработка
 
 *Запуск*

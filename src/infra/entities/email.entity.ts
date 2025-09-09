@@ -14,7 +14,10 @@ export class EmailEntity extends BaseTypeOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('simple-array')
+  @Column({
+    type: 'text',
+    array: true,
+  })
   toAddresses: string[];
 
   @Column('text')

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { SendEmailUseCaseAbstract } from '@application/abstract/emails/send-email-usecase.abstract';
 import { Log } from '@kryuk/ddd-kit/application/decorators/log.decorator';
-import { validateDTO } from '@kryuk/ddd-kit/application/validation/decorators/validate-dto.decorator';
+// import { validateDTO } from '@kryuk/ddd-kit/application/validation/decorators/validate-dto.decorator';
 import { DTO } from '@kryuk/ddd-kit/application/validation/decorators/dto.decorator';
 import { SendEmailDTO } from '@application/dto/emails/send-email.dto';
 import { ActionResult } from '@kryuk/ddd-kit/domain/interfaces/action-result.interface';
@@ -15,6 +15,7 @@ import {
   SUCCEED_CODE,
 } from '@kryuk/ddd-kit/domain/constants/error-codes';
 import { Undefinedable } from '@kryuk/ddd-kit/domain/types/undefinedable';
+import { validateDTO } from '@kryuk/ddd-kit/application/validation/decorators/validate-dto.decorator';
 
 @Injectable()
 export class SendEmailUseCase implements SendEmailUseCaseAbstract {
