@@ -6,10 +6,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
-    "start:dev": "NODE_ENV=development nest start --watch",
-    "start:local": "NODE_ENV=local env-cmd nest start --watch",
+    "start:dev": "env-cmd -e development env-cmd nest start --watch",
+    "start:local": "env-cmd -e local env-cmd nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/src/main",
     "lint": "eslint \"{src,database}/**/*.ts\"",
