@@ -1,8 +1,8 @@
 import { EmailAdapterAbstract } from '@domain/abstract/adapters/email-adapter.abstract';
 import { Injectable } from '@nestjs/common';
-import { ISendEmailOptions } from '@domain/interfaces/send-email-options.interface';
 import { faker } from '@faker-js/faker';
 import { Log } from '@kryuk/ddd-kit/application/decorators/log.decorator';
+import { ISendEmailOptions } from '@domain/interfaces/send-email-options.interface';
 
 @Injectable()
 export class SendgridAdapter implements EmailAdapterAbstract {

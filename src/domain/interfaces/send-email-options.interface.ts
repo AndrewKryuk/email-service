@@ -10,7 +10,7 @@ export interface ISendEmailOptions {
   subject: string;
 
   /**
-   * html email contnet
+   * html email content
    */
   html: string;
 }
