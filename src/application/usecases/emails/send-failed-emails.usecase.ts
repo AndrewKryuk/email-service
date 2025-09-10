@@ -11,6 +11,7 @@ import { EmailsOutbox } from '@domain/entities/emails-outbox';
 import { handleActionException } from '@kryuk/ddd-kit/application/utils/handle-action-exception';
 import { SendFailedEmailsUseCaseAbstract } from '@application/abstract/emails/send-failed-emails-usecase.abstract';
 import { TransactionServiceAbstract } from '@kryuk/ddd-kit/domain/abstract/services/transaction-service.abstract';
+import { Undefinedable } from '@kryuk/ddd-kit/domain/types/undefinedable';
 
 @Injectable()
 export class SendFailedEmailsUseCase
@@ -26,7 +27,7 @@ export class SendFailedEmailsUseCase
   @validateDTO()
   async execute(): Promise<{ sentCount: number; failedCount: number }> {
     const limit = CHUNK_SIZE;
-    const offset = 0;
+    let lastCreatedAt: Undefinedable<Date>;
     const now = new Date();
 
     let emailsOutboxes: EmailsOutbox[] = [];
@@ -39,13 +40,17 @@ export class SendFailedEmailsUseCase
           MAX_RETRY_COUNT,
           now,
           limit,
-          offset,
+          lastCreatedAt,
         );
 
         emailsOutboxes.forEach((emailOutbox) => emailOutbox.markAsProcessing());
 
         await this.emailsOutboxRepository.bulkSave(emailsOutboxes);
       });
+
+      if (!emailsOutboxes.length) {
+        break;
+      }
 
       for (const emailsOutbox of emailsOutboxes) {
         try {
@@ -78,6 +83,8 @@ export class SendFailedEmailsUseCase
           emailsOutbox.markAsMaxRetriesExceeded();
         }
       }
+
+      lastCreatedAt = emailsOutboxes[emailsOutboxes.length - 1].createdAt;
 
       await this.emailsOutboxRepository.bulkSave(emailsOutboxes);
     } while (emailsOutboxes.length === limit);

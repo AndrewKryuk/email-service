@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { LessThan, Repository } from 'typeorm';
+import { LessThan, MoreThan, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EmailsOutboxEntity } from '@infra/entities/emails-outbox.entity';
 import { EmailsOutbox } from '@domain/entities/emails-outbox';
@@ -25,18 +25,18 @@ export class EmailsOutboxRepository
     maxRetryCount: number,
     beforeNextRetryAt: Date,
     limit: number,
-    offset: number,
+    lastCreatedAt?: Date,
   ): Promise<EmailsOutbox[]> {
     const emailEntities = await this.emailsOutboxRepository.find({
       where: {
         status: EEmailOutboxStatus.failed,
         retryCount: LessThan(maxRetryCount),
         nextRetryAt: LessThan(beforeNextRetryAt),
+        ...(lastCreatedAt ? { createdAt: MoreThan(lastCreatedAt) } : {}),
       },
       order: {
         createdAt: 'asc',
       },
-      skip: offset,
       take: limit,
       lock: {
         mode: 'pessimistic_write',
@@ -52,17 +52,17 @@ export class EmailsOutboxRepository
   async findLockedChunk(
     beforeLockedAt: Date,
     limit: number,
-    offset: number,
+    lastCreatedAt?: Date,
   ): Promise<EmailsOutbox[]> {
     const emailEntities = await this.emailsOutboxRepository.find({
       where: {
         status: EEmailOutboxStatus.processing,
         lockedAt: LessThan(beforeLockedAt),
+        ...(lastCreatedAt ? { createdAt: MoreThan(lastCreatedAt) } : {}),
       },
       order: {
         createdAt: 'asc',
       },
-      skip: offset,
       take: limit,
       lock: {
         mode: 'pessimistic_write',
@@ -78,24 +78,27 @@ export class EmailsOutboxRepository
   async findExpiredSentChunk(
     beforeUpdatedAt: Date,
     limit: number,
-    offset: number,
+    lastCreatedAt?: Date,
   ): Promise<EmailsOutbox[]> {
-    const emailEntities = await this.emailsOutboxRepository.find({
-      where: {
-        status: EEmailOutboxStatus.sent,
-        updatedAt: LessThan(beforeUpdatedAt),
+    const emailEntities = await this.emailsOutboxRepository.manager.find(
+      EmailsOutboxEntity,
+      {
+        where: {
+          status: EEmailOutboxStatus.sent,
+          updatedAt: LessThan(beforeUpdatedAt),
+          ...(lastCreatedAt ? { createdAt: MoreThan(lastCreatedAt) } : {}),
+        },
+        order: {
+          createdAt: 'asc',
+        },
+        take: limit,
+        lock: {
+          mode: 'pessimistic_write',
+          tables: ['emails_outbox'],
+          onLocked: 'skip_locked',
+        },
       },
-      order: {
-        createdAt: 'asc',
-      },
-      skip: offset,
-      take: limit,
-      lock: {
-        mode: 'pessimistic_write',
-        tables: ['emails_outbox'],
-        onLocked: 'skip_locked',
-      },
-    });
+    );
 
     return emailEntities.map((emailEntity) => emailEntity.toDomain());
   }

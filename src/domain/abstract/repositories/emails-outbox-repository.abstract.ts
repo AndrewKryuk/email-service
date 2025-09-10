@@ -6,18 +6,18 @@ export abstract class EmailsOutboxRepositoryAbstract extends BaseRepositoryAbstr
     maxRetryCount: number,
     beforeNextRetryAt: Date,
     limit: number,
-    offset: number,
+    lastCreatedAt?: Date,
   ): Promise<EmailsOutbox[]>;
 
   abstract findLockedChunk(
     beforeLockedAt: Date,
     limit: number,
-    offset: number,
+    lastCreatedAt?: Date,
   ): Promise<EmailsOutbox[]>;
 
   abstract findExpiredSentChunk(
     beforeUpdatedAt: Date,
     limit: number,
-    offset: number,
+    lastCreatedAt?: Date,
   ): Promise<EmailsOutbox[]>;
 }

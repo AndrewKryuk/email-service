@@ -28,7 +28,7 @@
     "migration:revert-local": "env-cmd npm run typeorm -- -d ./node_modules/@kryuk/ddd-kit/dist/infra/configuration/typeorm-config.factory.js migration:revert"
   },
   "dependencies": {
-    "@kryuk/ddd-kit": "github:AndrewKryuk/nestjs-ddd-kit#v0.0.7",
+    "@kryuk/ddd-kit": "github:AndrewKryuk/nestjs-ddd-kit#v0.0.9",
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/microservices": "^10.3.7",

@@ -1,8 +1,11 @@
 import { CommandFactory } from 'nest-commander';
 import { AppModule } from './app.module';
 import { Logger } from 'nestjs-pino';
+import { initializeTransactionalContext } from 'typeorm-transactional';
 
 async function bootstrap() {
+  initializeTransactionalContext();
+
   const app = await CommandFactory.createWithoutRunning(AppModule, {
     bufferLogs: true,
   });

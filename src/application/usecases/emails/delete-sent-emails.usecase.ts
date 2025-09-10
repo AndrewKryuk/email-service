@@ -9,6 +9,7 @@ import {
 import { EmailsOutbox } from '@domain/entities/emails-outbox';
 import { TransactionServiceAbstract } from '@kryuk/ddd-kit/domain/abstract/services/transaction-service.abstract';
 import { DeleteSentEmailsUseCaseAbstract } from '@application/abstract/emails/delete-sent-emails-usecase.abstract';
+import { Undefinedable } from '@kryuk/ddd-kit/domain/types/undefinedable';
 
 @Injectable()
 export class DeleteSentEmailsUseCase
@@ -25,7 +26,7 @@ export class DeleteSentEmailsUseCase
     deletedCount: number;
   }> {
     const limit = CHUNK_SIZE;
-    const offset = 0;
+    let lastCreatedAt: Undefinedable<Date>;
     const beforeUpdatedAt = new Date(Date.now() - MAX_SENT_LIFETIME_MS);
 
     let deletedCount = 0;
@@ -36,8 +37,12 @@ export class DeleteSentEmailsUseCase
         emailsOutboxes = await this.emailsOutboxRepository.findExpiredSentChunk(
           beforeUpdatedAt,
           limit,
-          offset,
+          lastCreatedAt,
         );
+
+        if (emailsOutboxes.length) {
+          lastCreatedAt = emailsOutboxes[emailsOutboxes.length - 1].createdAt;
+        }
 
         const result =
           await this.emailsOutboxRepository.bulkDelete(emailsOutboxes);

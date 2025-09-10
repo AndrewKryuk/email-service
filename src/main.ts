@@ -9,8 +9,11 @@ import { BaseExceptionFilter } from '@kryuk/ddd-kit/transport/filters/base-excep
 import { SerializeInterceptor } from '@kryuk/ddd-kit/transport/interceptors/serialize.interceptor';
 import { INestApplication, VersioningType } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { initializeTransactionalContext } from 'typeorm-transactional';
 
 async function bootstrap() {
+  initializeTransactionalContext();
+
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
 
   app.use(bodyParser.json({ limit: '20mb' }));

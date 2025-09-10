@@ -9,7 +9,7 @@ import { XAccessTokenGuard } from '@transport/http/guards/x-access-token.guard';
 import { SendEmailUseCaseAbstract } from '@application/abstract/emails/send-email-usecase.abstract';
 import { InputValidationPipe } from '@kryuk/ddd-kit/transport/pipes/input-validation.pipe';
 import { ActionReply } from '@transport/http/dto/replies/action.reply';
-import { SendEmailDTO } from '@application/dto/emails/send-email.dto';
+import { SendEmailRequest } from '@transport/http/dto/emails/send-email.request';
 
 @ApiTags('Emails')
 @ApiSecurity('x-access-token')
@@ -27,7 +27,9 @@ export class EmailsController {
   @ApiResponse({
     type: ActionReply,
   })
-  async sendEmail(@Body() sendEmailDTO: SendEmailDTO): Promise<ActionReply> {
-    return { result: await this.sendEmailUseCase.execute(sendEmailDTO) };
+  async sendEmail(
+    @Body() sendEmailRequest: SendEmailRequest,
+  ): Promise<ActionReply> {
+    return { result: await this.sendEmailUseCase.execute(sendEmailRequest) };
   }
 }

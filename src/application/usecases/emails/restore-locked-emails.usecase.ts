@@ -9,6 +9,7 @@ import {
 import { EmailsOutbox } from '@domain/entities/emails-outbox';
 import { TransactionServiceAbstract } from '@kryuk/ddd-kit/domain/abstract/services/transaction-service.abstract';
 import { RestoreLockedEmailsUseCaseAbstract } from '@application/abstract/emails/restore-locked-emails-usecase.abstract';
+import { Undefinedable } from '@kryuk/ddd-kit/domain/types/undefinedable';
 
 @Injectable()
 export class RestoreLockedEmailsUseCase
@@ -25,7 +26,7 @@ export class RestoreLockedEmailsUseCase
     restoredCount: number;
   }> {
     const limit = CHUNK_SIZE;
-    const offset = 0;
+    let lastCreatedAt: Undefinedable<Date>;
     const beforeLockedAt = new Date(Date.now() - MAX_LOCKED_TIME_MS);
 
     let restoredCount = 0;
@@ -36,7 +37,7 @@ export class RestoreLockedEmailsUseCase
         emailsOutboxes = await this.emailsOutboxRepository.findLockedChunk(
           beforeLockedAt,
           limit,
-          offset,
+          lastCreatedAt,
         );
 
         emailsOutboxes.forEach((emailOutbox) => emailOutbox.markAsFailed());
@@ -44,6 +45,9 @@ export class RestoreLockedEmailsUseCase
         await this.emailsOutboxRepository.bulkSave(emailsOutboxes);
 
         restoredCount += emailsOutboxes.length;
+        if (emailsOutboxes.length) {
+          lastCreatedAt = emailsOutboxes[emailsOutboxes.length - 1].createdAt;
+        }
       });
     } while (emailsOutboxes.length === limit);
 
