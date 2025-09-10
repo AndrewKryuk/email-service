@@ -64,6 +64,7 @@ export class EmailsOutbox extends DomainEntity<IEmailOutboxProps> {
   markAsSent(): void {
     this.props.status = EEmailOutboxStatus.sent;
     this.props.lockedAt = null;
+    this.props.nextRetryAt = null;
   }
 
   markAsProcessing(): void {

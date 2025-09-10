@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { Log } from '@kryuk/ddd-kit/application/decorators/log.decorator';
 import { EmailAdapterAbstract } from '@domain/abstract/adapters/email-adapter.abstract';
 import { EmailsOutboxRepositoryAbstract } from '@domain/abstract/repositories/emails-outbox-repository.abstract';
-import { validateDTO } from '@kryuk/ddd-kit/application/validation/decorators/validate-dto.decorator';
 import {
   CHUNK_SIZE,
   MAX_RETRY_COUNT,
@@ -12,6 +11,7 @@ import { handleActionException } from '@kryuk/ddd-kit/application/utils/handle-a
 import { SendFailedEmailsUseCaseAbstract } from '@application/abstract/emails/send-failed-emails-usecase.abstract';
 import { TransactionServiceAbstract } from '@kryuk/ddd-kit/domain/abstract/services/transaction-service.abstract';
 import { Undefinedable } from '@kryuk/ddd-kit/domain/types/undefinedable';
+import { EEmailOutboxStatus } from '@domain/enums/email-outbox-status.enum';
 
 @Injectable()
 export class SendFailedEmailsUseCase
@@ -24,7 +24,6 @@ export class SendFailedEmailsUseCase
   ) {}
 
   @Log({ level: 'debug' })
-  @validateDTO()
   async execute(): Promise<{ sentCount: number; failedCount: number }> {
     const limit = CHUNK_SIZE;
     let lastCreatedAt: Undefinedable<Date>;
@@ -79,7 +78,10 @@ export class SendFailedEmailsUseCase
 
         emailsOutbox.increaseRetry();
 
-        if (emailsOutbox.retryCount >= MAX_RETRY_COUNT) {
+        if (
+          emailsOutbox.retryCount >= MAX_RETRY_COUNT &&
+          emailsOutbox.status === EEmailOutboxStatus.failed
+        ) {
           emailsOutbox.markAsMaxRetriesExceeded();
         }
       }

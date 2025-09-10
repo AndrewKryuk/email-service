@@ -9,7 +9,7 @@ import { DataSource } from 'typeorm';
 import { addTransactionalDataSource } from 'typeorm-transactional';
 import { DatabaseException } from '@kryuk/ddd-kit/application/exceptions/infra/database-exception';
 import { ERROR_CODES } from '@kryuk/ddd-kit/domain/constants/error-codes';
-import { transactionServiceProvider } from '@kryuk/ddd-kit/infra/services/services.providers';
+import { ServicesModule } from '@infra/services/services.module';
 
 @Module({
   imports: [
@@ -34,9 +34,10 @@ import { transactionServiceProvider } from '@kryuk/ddd-kit/infra/services/servic
     }),
     RepositoriesModule,
     AdaptersModule,
+    ServicesModule,
   ],
   controllers: [],
-  providers: [transactionServiceProvider],
-  exports: [RepositoriesModule, AdaptersModule, transactionServiceProvider],
+  providers: [],
+  exports: [RepositoriesModule, AdaptersModule, ServicesModule],
 })
 export class InfraModule {}

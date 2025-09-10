@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Log } from '@kryuk/ddd-kit/application/decorators/log.decorator';
 import { EmailsOutboxRepositoryAbstract } from '@domain/abstract/repositories/emails-outbox-repository.abstract';
-import { validateDTO } from '@kryuk/ddd-kit/application/validation/decorators/validate-dto.decorator';
 import {
   CHUNK_SIZE,
   MAX_SENT_LIFETIME_MS,
@@ -21,7 +20,6 @@ export class DeleteSentEmailsUseCase
   ) {}
 
   @Log({ level: 'debug' })
-  @validateDTO()
   async execute(): Promise<{
     deletedCount: number;
   }> {

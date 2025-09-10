@@ -13,7 +13,7 @@ export class ValidateAccessTokenUseCase
 {
   constructor(private readonly accessTokenConfig: AccessTokenConfigAbstract) {}
 
-  @Redact(['args[0].token'])
+  @Redact(['args[0].accessToken'])
   @Log({ level: 'debug' })
   @validateDTO()
   async execute(
