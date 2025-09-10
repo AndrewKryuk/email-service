@@ -50,8 +50,10 @@ describe('Send Email Use Case', () => {
     sendEmailUseCase = moduleRef.get<SendEmailUseCaseAbstract>(
       SendEmailUseCaseAbstract,
     );
+  });
 
-    jest.resetAllMocks();
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it('should throw an exception if empty dto is provided', async () => {

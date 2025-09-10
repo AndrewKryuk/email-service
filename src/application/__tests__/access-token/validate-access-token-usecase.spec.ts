@@ -36,6 +36,10 @@ describe('Validate Access Token Use Case', () => {
       );
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('should throw an exception if empty dto is provided', async () => {
     const validateAccessTokenDTO = {};
 

@@ -40,12 +40,12 @@ export class DeleteSentEmailsUseCase
 
         if (emailsOutboxes.length) {
           lastCreatedAt = emailsOutboxes[emailsOutboxes.length - 1].createdAt;
+
+          const result =
+            await this.emailsOutboxRepository.bulkDelete(emailsOutboxes);
+
+          deletedCount += result.deletedCount;
         }
-
-        const result =
-          await this.emailsOutboxRepository.bulkDelete(emailsOutboxes);
-
-        deletedCount += result.deletedCount;
       });
     } while (emailsOutboxes.length === limit);
 
