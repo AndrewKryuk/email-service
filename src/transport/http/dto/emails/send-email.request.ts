@@ -1,7 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { faker } from '@faker-js/faker';
 import { SendEmailDTO } from '@application/dto/emails/send-email.dto';
+import { ApiPropsToSnakeCase } from '@transport/http/swagger/decorators/api-props-to-snake-case.decorator';
 
+@ApiPropsToSnakeCase()
 export class SendEmailRequest extends SendEmailDTO {
   @ApiProperty({
     required: true,
