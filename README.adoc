@@ -26,7 +26,7 @@
       - usecases/*/*.usecase.ts # юзкейсы
       - interfaces/**/*.interface.ts # интерфейсы
       - abstract/**/*.abstract.ts # абстракции юзкейсов
-      - dto/**/*.abstract.ts # dto для валидаций
+      - dto/**/*.ts # dto для валидаций
       - __tests__/**/*.spec.ts # unit тесты для юзкейсов
         - __mocks__/**/*.mock.ts # моки
     - transport/ # транспортный слой
