@@ -19,7 +19,7 @@ export class RestoreLockedEmailsUseCase
     private readonly transactionService: TransactionServiceAbstract,
   ) {}
 
-  @Log({ level: 'debug' })
+  @Log()
   async execute(): Promise<{
     restoredCount: number;
   }> {

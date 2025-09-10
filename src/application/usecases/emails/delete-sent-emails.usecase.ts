@@ -19,7 +19,7 @@ export class DeleteSentEmailsUseCase
     private readonly transactionService: TransactionServiceAbstract,
   ) {}
 
-  @Log({ level: 'debug' })
+  @Log()
   async execute(): Promise<{
     deletedCount: number;
   }> {

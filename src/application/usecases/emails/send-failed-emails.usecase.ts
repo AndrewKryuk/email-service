@@ -23,7 +23,7 @@ export class SendFailedEmailsUseCase
     private readonly transactionService: TransactionServiceAbstract,
   ) {}
 
-  @Log({ level: 'debug' })
+  @Log()
   async execute(): Promise<{ sentCount: number; failedCount: number }> {
     let lastCreatedAt: Undefinedable<Date>;
     const now = new Date(Date.now());
