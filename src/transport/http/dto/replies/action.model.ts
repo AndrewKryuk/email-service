@@ -18,10 +18,4 @@ export class ActionModel {
     description: 'Описание ошибки',
   })
   error_message?: string;
-
-  @ApiProperty({
-    required: false,
-    description: 'Код ошибки',
-  })
-  error_code?: string;
 }
