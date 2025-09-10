@@ -59,6 +59,7 @@ export class EmailsOutbox extends DomainEntity<IEmailOutboxProps> {
   markAsFailed(): void {
     this.props.status = EEmailOutboxStatus.failed;
     this.props.lockedAt = null;
+    this.props.nextRetryAt = new Date(Date.now() + NEXT_RETRY_DURATION_MS);
   }
 
   markAsSent(): void {
