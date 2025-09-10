@@ -32,7 +32,7 @@
     - transport/ # транспортный слой
       - grpc/*/controllers/*.controller.ts
       - kafka/*/controllers/*.controller.ts
-      - cli/*/commands/*.commands=.ts
+      - cli/*/commands/*.commands.ts
       - http/*/controllers/*.controller.ts
 ----
 
