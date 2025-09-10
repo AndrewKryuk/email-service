@@ -7,6 +7,8 @@ import { EmailConfigAbstract } from '@application/abstract/configuration/email-c
 import { emailConfigFactory } from '@infra/configuration/factories/email-config.factory';
 import { AccessTokenConfigAbstract } from '@application/abstract/configuration/access-token-config.abstract';
 import { accessTokenConfigFactory } from '@infra/configuration/factories/access-token-config.factory';
+import { ApplicationConfigAbstract } from '@application/abstract/configuration/application-config.abstract';
+import { applicationConfigFactory } from '@infra/configuration/factories/application-config.factory';
 
 export const emailConfigProvider: Provider = {
   provide: EmailConfigAbstract,
@@ -18,9 +20,15 @@ export const accessTokenConfigProvider: Provider = {
   useFactory: accessTokenConfigFactory,
 };
 
+export const applicationConfigProvider: Provider = {
+  provide: ApplicationConfigAbstract,
+  useFactory: applicationConfigFactory,
+};
+
 export const configurationProviders: Provider[] = [
   httpConfigProvider,
   typeormConfigProvider,
   emailConfigProvider,
   accessTokenConfigProvider,
+  applicationConfigProvider,
 ];

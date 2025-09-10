@@ -55,6 +55,10 @@ postgres ~16,
 
 GET :9000/metrics
 
+| Метрики |
+
+GET :3000/swagger
+
 | Хелфчеки |
 
 readiness, liveness

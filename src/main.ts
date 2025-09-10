@@ -10,6 +10,7 @@ import { SerializeInterceptor } from '@kryuk/ddd-kit/transport/interceptors/seri
 import { INestApplication, VersioningType } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { initializeTransactionalContext } from 'typeorm-transactional';
+import { ApplicationConfigAbstract } from '@application/abstract/configuration/application-config.abstract';
 
 async function bootstrap() {
   initializeTransactionalContext();
@@ -31,7 +32,11 @@ async function bootstrap() {
     type: VersioningType.URI,
   });
 
-  setupOpenApi(app);
+  const { nodeEnv } = app.get(ApplicationConfigAbstract);
+
+  if (nodeEnv !== 'production') {
+    setupOpenApi(app);
+  }
 
   const { port } = app.get(HttpConfigAbstract);
 
