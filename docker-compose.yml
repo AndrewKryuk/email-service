@@ -10,7 +10,7 @@ x-common-template: &common-template
     - *app-network
 
 services:
-  &email-service email:
+  &email-service email-service:
     <<: *common-template
     container_name: *email-service
     hostname: *email-service
