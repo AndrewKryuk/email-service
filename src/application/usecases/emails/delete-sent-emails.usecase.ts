@@ -23,7 +23,6 @@ export class DeleteSentEmailsUseCase
   async execute(): Promise<{
     deletedCount: number;
   }> {
-    const limit = CHUNK_SIZE;
     let lastCreatedAt: Undefinedable<Date>;
     const beforeUpdatedAt = new Date(Date.now() - MAX_SENT_LIFETIME_MS);
 
@@ -34,7 +33,7 @@ export class DeleteSentEmailsUseCase
       await this.transactionService.withTransaction(async () => {
         emailsOutboxes = await this.emailsOutboxRepository.findExpiredSentChunk(
           beforeUpdatedAt,
-          limit,
+          CHUNK_SIZE,
           lastCreatedAt,
         );
 
@@ -47,7 +46,7 @@ export class DeleteSentEmailsUseCase
           deletedCount += result.deletedCount;
         }
       });
-    } while (emailsOutboxes.length === limit);
+    } while (emailsOutboxes.length === CHUNK_SIZE);
 
     return {
       deletedCount,

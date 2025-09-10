@@ -25,7 +25,6 @@ export class SendFailedEmailsUseCase
 
   @Log({ level: 'debug' })
   async execute(): Promise<{ sentCount: number; failedCount: number }> {
-    const limit = CHUNK_SIZE;
     let lastCreatedAt: Undefinedable<Date>;
     const now = new Date(Date.now());
 
@@ -38,7 +37,7 @@ export class SendFailedEmailsUseCase
         emailsOutboxes = await this.emailsOutboxRepository.findFailedChunk(
           MAX_RETRY_COUNT,
           now,
-          limit,
+          CHUNK_SIZE,
           lastCreatedAt,
         );
 
@@ -92,7 +91,7 @@ export class SendFailedEmailsUseCase
       lastCreatedAt = emailsOutboxes[emailsOutboxes.length - 1].createdAt;
 
       await this.emailsOutboxRepository.bulkSave(emailsOutboxes);
-    } while (emailsOutboxes.length === limit);
+    } while (emailsOutboxes.length === CHUNK_SIZE);
 
     return { sentCount, failedCount };
   }

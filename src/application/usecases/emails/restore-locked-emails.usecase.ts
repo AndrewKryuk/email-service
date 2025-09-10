@@ -23,7 +23,6 @@ export class RestoreLockedEmailsUseCase
   async execute(): Promise<{
     restoredCount: number;
   }> {
-    const limit = CHUNK_SIZE;
     let lastCreatedAt: Undefinedable<Date>;
     const beforeLockedAt = new Date(Date.now() - MAX_LOCKED_TIME_MS);
 
@@ -34,7 +33,7 @@ export class RestoreLockedEmailsUseCase
       await this.transactionService.withTransaction(async () => {
         emailsOutboxes = await this.emailsOutboxRepository.findLockedChunk(
           beforeLockedAt,
-          limit,
+          CHUNK_SIZE,
           lastCreatedAt,
         );
 
@@ -47,7 +46,7 @@ export class RestoreLockedEmailsUseCase
           lastCreatedAt = emailsOutboxes[emailsOutboxes.length - 1].createdAt;
         }
       });
-    } while (emailsOutboxes.length === limit);
+    } while (emailsOutboxes.length === CHUNK_SIZE);
 
     return {
       restoredCount,
