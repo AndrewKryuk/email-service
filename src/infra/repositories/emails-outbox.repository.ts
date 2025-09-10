@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { LessThan, MoreThan, Repository } from 'typeorm';
+import { LessThan, MoreThanOrEqual, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EmailsOutboxEntity } from '@infra/entities/emails-outbox.entity';
 import { EmailsOutbox } from '@domain/entities/emails-outbox';
@@ -32,7 +32,7 @@ export class EmailsOutboxRepository
         status: EEmailOutboxStatus.failed,
         retryCount: LessThan(maxRetryCount),
         nextRetryAt: LessThan(beforeNextRetryAt),
-        ...(lastCreatedAt ? { createdAt: MoreThan(lastCreatedAt) } : {}),
+        ...(lastCreatedAt ? { createdAt: MoreThanOrEqual(lastCreatedAt) } : {}),
       },
       order: {
         createdAt: 'asc',
@@ -58,7 +58,7 @@ export class EmailsOutboxRepository
       where: {
         status: EEmailOutboxStatus.processing,
         lockedAt: LessThan(beforeLockedAt),
-        ...(lastCreatedAt ? { createdAt: MoreThan(lastCreatedAt) } : {}),
+        ...(lastCreatedAt ? { createdAt: MoreThanOrEqual(lastCreatedAt) } : {}),
       },
       order: {
         createdAt: 'asc',
@@ -86,7 +86,9 @@ export class EmailsOutboxRepository
         where: {
           status: EEmailOutboxStatus.sent,
           updatedAt: LessThan(beforeUpdatedAt),
-          ...(lastCreatedAt ? { createdAt: MoreThan(lastCreatedAt) } : {}),
+          ...(lastCreatedAt
+            ? { createdAt: MoreThanOrEqual(lastCreatedAt) }
+            : {}),
         },
         order: {
           createdAt: 'asc',
