@@ -21,6 +21,4 @@ COPY --from=builder /opt/app/package*.json ./
 COPY --from=builder /opt/app/dist ./dist
 COPY --from=builder /opt/app/database ./database
 
-EXPOSE 3000
-
 CMD [ "npm", "run", "start:prod" ]
