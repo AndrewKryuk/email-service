@@ -55,7 +55,7 @@ postgres ~16,
 
 GET :9000/metrics
 
-| Метрики |
+| Swagger |
 
 GET :3000/swagger
 
