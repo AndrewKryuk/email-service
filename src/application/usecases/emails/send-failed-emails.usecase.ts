@@ -27,7 +27,7 @@ export class SendFailedEmailsUseCase
   async execute(): Promise<{ sentCount: number; failedCount: number }> {
     const limit = CHUNK_SIZE;
     let lastCreatedAt: Undefinedable<Date>;
-    const now = new Date();
+    const now = new Date(Date.now());
 
     let emailsOutboxes: EmailsOutbox[] = [];
     let sentCount = 0;
@@ -42,9 +42,12 @@ export class SendFailedEmailsUseCase
           lastCreatedAt,
         );
 
-        emailsOutboxes.forEach((emailOutbox) => emailOutbox.markAsProcessing());
-
-        await this.emailsOutboxRepository.bulkSave(emailsOutboxes);
+        if (emailsOutboxes.length) {
+          emailsOutboxes.forEach((emailOutbox) =>
+            emailOutbox.markAsProcessing(),
+          );
+          await this.emailsOutboxRepository.bulkSave(emailsOutboxes);
+        }
       });
 
       if (!emailsOutboxes.length) {

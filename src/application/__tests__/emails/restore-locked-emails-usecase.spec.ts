@@ -83,6 +83,14 @@ describe('Restore Locked Emails Use Case', () => {
       .mockResolvedValueOnce([emailsOutboxFirstMock])
       .mockResolvedValueOnce([emailsOutboxSecondMock])
       .mockResolvedValueOnce([]);
+    const firstMockMarkAsFaliedSpy = jest.spyOn(
+      emailsOutboxFirstMock,
+      'markAsFailed',
+    );
+    const secondMockMarkAsFaliedSpy = jest.spyOn(
+      emailsOutboxSecondMock,
+      'markAsFailed',
+    );
     const bulkSaveSpy = jest.spyOn(emailsOutboxRepository, 'bulkSave');
     jest.spyOn(Date, 'now').mockReturnValue(now);
 
@@ -110,6 +118,8 @@ describe('Restore Locked Emails Use Case', () => {
       CHUNK_SIZE,
       emailsOutboxSecondMock.createdAt,
     );
+    expect(firstMockMarkAsFaliedSpy).toHaveBeenCalled();
+    expect(secondMockMarkAsFaliedSpy).toHaveBeenCalled();
     expect(bulkSaveSpy).toHaveBeenCalledTimes(2);
     expect(bulkSaveSpy).toHaveBeenNthCalledWith(1, [emailsOutboxFirstMock]);
     expect(bulkSaveSpy).toHaveBeenNthCalledWith(2, [emailsOutboxSecondMock]);
