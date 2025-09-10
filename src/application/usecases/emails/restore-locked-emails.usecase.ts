@@ -38,12 +38,12 @@ export class RestoreLockedEmailsUseCase
           lastCreatedAt,
         );
 
-        emailsOutboxes.forEach((emailOutbox) => emailOutbox.markAsFailed());
-
-        await this.emailsOutboxRepository.bulkSave(emailsOutboxes);
-
-        restoredCount += emailsOutboxes.length;
         if (emailsOutboxes.length) {
+          emailsOutboxes.forEach((emailOutbox) => emailOutbox.markAsFailed());
+
+          await this.emailsOutboxRepository.bulkSave(emailsOutboxes);
+
+          restoredCount += emailsOutboxes.length;
           lastCreatedAt = emailsOutboxes[emailsOutboxes.length - 1].createdAt;
         }
       });
